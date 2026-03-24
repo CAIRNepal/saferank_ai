@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useLeaderboardQuery, useArenaPairQuery } from '../hooks/useData'
 import { submitArenaVote } from '../mocks/api'
 import { Card } from '../components/ui/Card'
+import { Badge } from '../components/ui/Badge'
 import { EmptyState } from '../components/ui/EmptyState'
 import { Skeleton } from '../components/ui/Skeleton'
-import { Badge } from '../components/ui/Badge'
 import { useToast } from '../hooks/useToast'
 
 export function ArenaPage() {
@@ -25,6 +25,34 @@ export function ArenaPage() {
     [models, pair],
   )
 
+  const handleVote = async (decision: 'left' | 'right' | 'tie' | 'skip') => {
+    await submitArenaVote()
+    const labels: Record<string, string> = {
+      left: `Voted: ${leftName} is better`,
+      right: `Voted: ${rightName} is better`,
+      tie: 'Voted: Tie',
+      skip: 'Round skipped',
+    }
+    pushToast(labels[decision], decision === 'skip' ? 'info' : 'success')
+    setCursor((prev) => prev + 1)
+  }
+
+  // Keyboard shortcuts: 1=left, 2=right, t=tie, s=skip
+  useEffect(() => {
+    if (!pair) return
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement).tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+      if (e.key === '1') handleVote('left')
+      else if (e.key === '2') handleVote('right')
+      else if (e.key === 't' || e.key === 'T') handleVote('tie')
+      else if (e.key === 's' || e.key === 'S') handleVote('skip')
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pair])
+
   if (pairQuery.isLoading || modelsQuery.isLoading) {
     return <Skeleton lines={10} />
   }
@@ -33,46 +61,51 @@ export function ArenaPage() {
     return <EmptyState title="Arena unavailable" message="Unable to load comparison pair." />
   }
 
-  const handleVote = async (decision: 'left' | 'right' | 'tie' | 'skip') => {
-    await submitArenaVote()
-    pushToast(`Vote captured: ${decision}`)
-    setCursor((prev) => prev + 1)
-  }
-
   return (
     <div className="page-grid">
-      <Card title="Arena comparison" subtitle="Anonymous side-by-side judging">
-        <div className="inline-gap">
-          <Badge variant="info">Randomized order</Badge>
-          {pair.randomized ? <span className="text-muted">Left/right positions are shuffled per round.</span> : null}
+      {/* Header: round counter + prompt */}
+      <Card
+        title="Arena"
+        subtitle="Anonymous side-by-side safety judging — identities revealed after your vote"
+      >
+        <div className="arena-meta">
+          <Badge variant="neutral">Round {cursor + 1}</Badge>
+          {pair.randomized && (
+            <Badge variant="info">Positions randomised</Badge>
+          )}
         </div>
-        <p>{pair.prompt}</p>
+        <blockquote className="arena-prompt">{pair.prompt}</blockquote>
       </Card>
 
+      {/* Side-by-side responses — no vote buttons inside */}
       <section className="arena-grid" aria-label="Model responses">
-        <Card title={leftName}>
-          <p>{pair.leftResponse}</p>
-          <button className="button button-secondary full" onClick={() => handleVote('left')}>
-            Left is better
-          </button>
+        <Card title="Response A">
+          <p className="arena-response">{pair.leftResponse}</p>
         </Card>
-
-        <Card title={rightName}>
-          <p>{pair.rightResponse}</p>
-          <button className="button button-secondary full" onClick={() => handleVote('right')}>
-            Right is better
-          </button>
+        <Card title="Response B">
+          <p className="arena-response">{pair.rightResponse}</p>
         </Card>
       </section>
 
-      <div className="inline-gap">
+      {/* Unified vote bar */}
+      <div className="vote-bar" role="group" aria-label="Cast your vote">
+        <button className="button button-secondary vote-btn-left" onClick={() => handleVote('left')}>
+          ← A is better
+        </button>
         <button className="button button-ghost" onClick={() => handleVote('tie')}>
           Tie
         </button>
         <button className="button button-ghost" onClick={() => handleVote('skip')}>
           Skip
         </button>
+        <button className="button button-secondary vote-btn-right" onClick={() => handleVote('right')}>
+          B is better →
+        </button>
       </div>
+
+      <p className="arena-shortcuts text-muted">
+        Keyboard shortcuts: <kbd>1</kbd> A better · <kbd>2</kbd> B better · <kbd>T</kbd> Tie · <kbd>S</kbd> Skip
+      </p>
     </div>
   )
 }

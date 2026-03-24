@@ -1,7 +1,9 @@
 import { createContext, useContext } from 'react'
 
+export type ToastVariant = 'success' | 'info' | 'warning' | 'error'
+
 type ToastContextValue = {
-  pushToast: (message: string) => void
+  pushToast: (message: string, variant?: ToastVariant) => void
 }
 
 export const ToastContext = createContext<ToastContextValue | null>(null)

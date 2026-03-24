@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import {
   Bar,
   BarChart,
@@ -34,11 +34,28 @@ export function ModelDetailPage() {
   }
 
   if (isError || !data) {
-    return <EmptyState title="Model not found" message="This model profile is unavailable." />
+    return (
+      <EmptyState
+        title="Model not found"
+        message="This model profile is unavailable."
+        action={
+          <Link className="button button-secondary" to="/leaderboard">
+            ← Back to leaderboard
+          </Link>
+        }
+      />
+    )
   }
 
   return (
     <div className="page-grid">
+      {/* Back navigation */}
+      <div>
+        <Link to="/leaderboard" className="back-link">
+          ← Back to leaderboard
+        </Link>
+      </div>
+
       <Card title={data.model.name} subtitle={data.model.provider}>
         <div className="inline-gap">
           <ScorePill score={data.model.overallScore} />
@@ -48,7 +65,10 @@ export function ModelDetailPage() {
         <p className="text-muted">Last evaluation {formatDate(data.model.lastUpdated)}</p>
       </Card>
 
-      <Card title="Axis-level score breakdown">
+      <Card
+        title="Axis-level score breakdown"
+        subtitle="Scores across the three primary safety evaluation dimensions"
+      >
         <div className="chart-wrap" aria-label="Axis score chart">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={axisData}>
@@ -60,17 +80,20 @@ export function ModelDetailPage() {
             </BarChart>
           </ResponsiveContainer>
         </div>
+        <p className="text-muted" style={{ marginTop: '8px', fontSize: '0.82rem' }}>
+          See <Link className="text-link" to="/methodology">methodology</Link> for axis definitions and weightings.
+        </p>
       </Card>
 
-      <Card title="Trend history (dummy)">
-        <div className="chart-wrap" aria-label="Trend chart">
+      <Card title="Score trend" subtitle="Based on available evaluation snapshots">
+        <div className="chart-wrap" aria-label="Score trend chart">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data.trend}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="label" />
               <YAxis domain={[70, 100]} />
               <RechartsTooltip />
-              <Line type="monotone" dataKey="score" stroke="var(--accent-strong)" strokeWidth={2.5} />
+              <Line type="monotone" dataKey="score" stroke="var(--accent-strong)" strokeWidth={2.5} dot={{ r: 4 }} />
             </LineChart>
           </ResponsiveContainer>
         </div>

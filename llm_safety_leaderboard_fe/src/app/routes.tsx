@@ -6,6 +6,7 @@ import { ModelDetailPage } from '../pages/ModelDetailPage'
 import { ArenaPage } from '../pages/ArenaPage'
 import { MethodologyPage } from '../pages/MethodologyPage'
 import { ChangelogPage } from '../pages/ChangelogPage'
+import { SubmitPage } from '../pages/SubmitPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
 
 export const appRoutes: RouteObject[] = [
@@ -16,5 +17,6 @@ export const appRoutes: RouteObject[] = [
   { path: '/arena', element: <ArenaPage /> },
   { path: '/methodology', element: <MethodologyPage /> },
   { path: '/changelog', element: <ChangelogPage /> },
+  { path: '/submit', element: <SubmitPage /> },
   { path: '*', element: <NotFoundPage /> },
 ]

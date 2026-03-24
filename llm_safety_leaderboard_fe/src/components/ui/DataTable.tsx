@@ -13,9 +13,10 @@ type Row = {
 type Props = {
   columns: Column[]
   rows: Row[]
+  onRowClick?: (key: string) => void
 }
 
-export function DataTable({ columns, rows }: Props) {
+export function DataTable({ columns, rows, onRowClick }: Props) {
   return (
     <div className="table-wrap">
       <table className="table">
@@ -28,7 +29,19 @@ export function DataTable({ columns, rows }: Props) {
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.key}>
+            <tr
+              key={row.key}
+              onClick={
+                onRowClick
+                  ? (e) => {
+                      const target = e.target as HTMLElement
+                      if (target.closest('a, button')) return
+                      onRowClick(row.key)
+                    }
+                  : undefined
+              }
+              className={onRowClick ? 'table-row-clickable' : undefined}
+            >
               {row.cells.map((cell, index) => (
                 <td key={`${row.key}-${index}`}>{cell}</td>
               ))}
