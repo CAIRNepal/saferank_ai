@@ -7,4 +7,5 @@ llm_safety_leaderboard_fe/dist
 llm_safety_leaderboard_fe/node_modules
 node_modules/
 .DS_Store
-
+ChatGPT.html
+ChatGPT_files
