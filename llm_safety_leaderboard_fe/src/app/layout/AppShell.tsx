@@ -5,7 +5,7 @@ import { Modal } from '../../components/ui/Modal'
 import cairNepalLogo from '../../assets/cair-nepal-logo.png'
 
 const navItems = [
-  { to: '/overview', label: 'Overview' },
+  { to: '/saferank_ai/', label: 'Overview' },
   { to: '/leaderboard', label: 'Leaderboard' },
   { to: '/arena', label: 'Arena' },
   { to: '/methodology', label: 'Methodology' },
@@ -96,7 +96,7 @@ export function AppShell({ children }: Props) {
       <header className="site-header" role="banner">
         <div className="app-shell header-inner">
           {/* Brand */}
-          <NavLink to="/overview" className="brand-link" aria-label="SafeRank AI — home">
+          <NavLink to="/saferank_ai/" className="brand-link" aria-label="SafeRank AI — home">
             <ShieldLogo />
             <div>
               <span className="brand-name">SafeRank AI</span>

@@ -8,8 +8,8 @@ export function NotFoundPage() {
         title="Page not found"
         message="The route you requested does not exist."
         action={
-          <Link className="button button-secondary" to="/overview">
-            ← Back to overview
+          <Link className="button button-secondary" to="/saferank_ai/">
+            ← Back to home
           </Link>
         }
       />

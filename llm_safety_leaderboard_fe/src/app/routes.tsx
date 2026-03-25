@@ -1,5 +1,4 @@
 import type { RouteObject } from 'react-router-dom'
-import { Navigate } from 'react-router-dom'
 import { OverviewPage } from '../pages/OverviewPage'
 import { LeaderboardPage } from '../pages/LeaderboardPage'
 import { ModelDetailPage } from '../pages/ModelDetailPage'
@@ -10,7 +9,6 @@ import { SubmitPage } from '../pages/SubmitPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
 
 export const appRoutes: RouteObject[] = [
-  { path: '/', element: <Navigate to="/saferank_ai/" replace /> },
   { path: '/saferank_ai/', element: <OverviewPage /> },
   { path: '/leaderboard', element: <LeaderboardPage /> },
   { path: '/models/:modelId', element: <ModelDetailPage /> },
