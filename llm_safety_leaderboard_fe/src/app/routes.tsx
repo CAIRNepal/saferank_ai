@@ -10,8 +10,8 @@ import { SubmitPage } from '../pages/SubmitPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
 
 export const appRoutes: RouteObject[] = [
-  { path: '/', element: <Navigate to="/overview" replace /> },
-  { path: '/overview', element: <OverviewPage /> },
+  { path: '/', element: <Navigate to="/saferank_ai/" replace /> },
+  { path: '/saferank_ai/', element: <OverviewPage /> },
   { path: '/leaderboard', element: <LeaderboardPage /> },
   { path: '/models/:modelId', element: <ModelDetailPage /> },
   { path: '/arena', element: <ArenaPage /> },
